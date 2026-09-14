@@ -1,4 +1,4 @@
-The Firefinder Simulator is a tool where fire lookouts can practice using the Osborne firefinder.  
+The Firefinder Simulator is a tool where fire lookouts can practice using the Osborne firefinder.
 
 The tool simulates the panoramic view from a lookout tower using photographs. An image of smoke from a fire is overlayed onto the photographs. The goal for the student is to identify the smoke in the landscape, determine its location using the firefinder and map, and complete a smoke report form. To achieve this they will practice the problem solving skills needed for real life lookout duty.
 
