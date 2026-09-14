@@ -199,14 +199,14 @@ const SCENARIOS = {
     smoke: {
       photoId: "delilah_12",
       overlayImage: "assets/smoke_forestfire.png",
-      xPos: 1490, yPos: 382, widthPx: 77,   // pixel coords on the 1920x968 native photo
+      xPos: 1490, yPos: 352, widthPx: 77,   // pixel coords on the 1920x968 native photo
       closeupImage: "images/closeups/scenario5_closeup.png"
     },
     answers: { 
       classification: "illegitimate",
       azimuth_tolerance_min: 15,
       distance: { miles: 4.8, tolerance: 0.5 },
-      landmark: "Deer Crk Rec Area",
+      landmark: "Logger Point",
       legal: { township: 13, range: 28, section: 9, quarter: "SW" },
       base_visible: "no",
       volume: ["small"],
@@ -226,7 +226,7 @@ const SCENARIOS = {
     smoke: {
       photoId: "delilah_11",
       overlayImage: "assets/smoke_rockyfire.png",
-      xPos: 1750, yPos: 174, widthPx: 77,   // pixel coords on the 1920x968 native photo
+      xPos: 1750, yPos: 245, widthPx: 77,   // pixel coords on the 1920x968 native photo
       closeupImage: "images/closeups/scenario6_closeup.png"
     },
     answers: { 
@@ -253,7 +253,7 @@ const SCENARIOS = {
     smoke: {
       photoId: "delilah_9",
       overlayImage: "assets/smoke_ridge.png",
-      xPos: 1300, yPos: 350, widthPx: 142,   // pixel coords on the 1920x968 native photo
+      xPos: 1390, yPos: 428, widthPx: 85,   // pixel coords on the 1920x968 native photo
       closeupImage: "images/closeups/scenario7_closeup.png"
     },
     answers: { 
