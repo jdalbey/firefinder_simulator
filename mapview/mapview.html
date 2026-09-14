@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delilah Region Map</title>
+
+<link
+  rel="stylesheet"
+  href="leaflet.css"
+/>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  #map {
+    width: 100%;
+    height: 100vh;
+  }
+
+  .info {
+    background: rgba(255,255,255,0.9);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+
+  .mile-label {
+    color: red;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white;
+  }
+
+  /* Named-place labels, styled to match OpenTopoMap's own place labels. */
+  .place-label {
+    color: black;
+    font-family: "DejaVu Sans", sans-serif;
+    font-size: 11px;
+    font-style: italic;
+    white-space: nowrap;
+    text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white;
+  }
+
+  #no-bearing-msg {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="no-bearing-msg" class="info" style="display:none">
+  No bearing line to show — the Firefinder hasn't been sighted yet.<br>
+  Go back to the simulator, open the Firefinder, aim it at the smoke,
+  then click Map again.
+</div>
+
+<script src="leaflet.js"></script>
+<script src="esri-leaflet.js"></script>
+<script src="places-data.js"></script>
+<script>
+// Compute the destination point (end point of line)
+// lat, lon is origin point of line 
+// bearingDeg is compass bearing to destination
+// distanceMeters is desired length of line
+function destinationPoint(lat, lon, bearingDeg, distanceMeters) {
+    const R = 6371000; // Earth radius in meters
+
+    const phi1 = lat * Math.PI / 180;
+    const lambda1 = lon * Math.PI / 180;
+    const theta = bearingDeg * Math.PI / 180;
+    const delta = distanceMeters / R;
+
+    const phi2 = Math.asin(
+        Math.sin(phi1) * Math.cos(delta) +
+        Math.cos(phi1) * Math.sin(delta) * Math.cos(theta)
+    );
+
+    const lambda2 = lambda1 + Math.atan2(
+        Math.sin(theta) * Math.sin(delta) * Math.cos(phi1),
+        Math.cos(delta) - Math.sin(phi1) * Math.sin(phi2)
+    );
+
+    return [
+        phi2 * 180 / Math.PI,
+        lambda2 * 180 / Math.PI
+    ];
+}
+
+// Formats an inch value as a label like ".5", "1", "1.5", "2" — a bare
+// leading dot instead of "0.5", matching how a physical ruler is marked.
+function formatInchLabel(inches) {
+    if (Number.isInteger(inches)) { return inches.toString(); }
+    const text = inches.toFixed(1);
+    if (text.startsWith('0.')) { return text.slice(1); }
+    return text;
+}
+
+  // Constants describing the desired line
+  const centerLat = 36.80454;
+  const centerLng = -119.11755;
+  const center = [centerLat, centerLng];
+  const distanceMiles = 25
+  const distanceMeters = distanceMiles * 1609.344;
+  const params     = new URLSearchParams(window.location.search);
+  const rawBearing = params.get('bearing');
+  // rawBearing is missing whenever Map is opened before the Firefinder has
+  // been sighted (see openMapView() in firefinder_simulator.html) — there's
+  // no real bearing to draw in that case, so don't fabricate one; show an
+  // explanation instead (below) rather than a silently-missing/broken line.
+  const bearing    = rawBearing === null ? NaN : parseFloat(rawBearing);
+  const hasBearing = !Number.isNaN(bearing);
+
+  let endPoint = null;
+  if (hasBearing) {
+    // Project 25 miles out from the lookout along the reported bearing to
+    // get the far end of the sight line.
+    endPoint = destinationPoint(
+          center[0],
+          center[1],
+          bearing,
+          distanceMeters
+    );
+    //console.log(endPoint); // debug: log the computed endpoint coordinates
+  } else {
+    // No bearing was supplied, so there's nothing to draw — surface the
+    // explanatory message instead.
+    document.getElementById('no-bearing-msg').style.display = '';
+  }
+
+  // Create map 
+  //    Typical zoom values:
+  //    5 → state/large region
+  //    8 → county-sized area
+  //    10 → city and surroundings
+  //    12 → town
+  //    14 → neighborhood
+  const map = L.map('map').setView([centerLat, centerLng], 12);
+
+  // Local tiles (downloaded by fetch_tiles.py) with CDN fallback
+  // Previous CDN sources:
+  //   'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+  //   'https://api.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=6a29db114508452294f5963855c41137'
+  const topoLayer = L.tileLayer(
+    'tiles/{z}/{x}/{y}.png',
+    {
+      maxZoom: 17,
+      maxNativeZoom: 17,
+      attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap'
+    }
+  );
+  topoLayer.addTo(map);
+
+// Draw the sight line (and its tick marks) — only when a real bearing came
+// from the simulator. See the hasBearing check above.
+if (hasBearing) {
+  // Draw the red sight line itself, from the lookout out to endPoint.
+  const sightLine = L.polyline(
+    [center, endPoint],
+    {
+      color: 'red',
+      weight: 3
+    }
+  ).addTo(map);
+
+  // Add half-mile index marks
+  //This draws a 500-foot tick mark every 0.5 mile on the right side of the line.
+
+  const tickSpacingMiles = 0.5;   // how far apart the tick marks are, along the sight line
+  const tickLengthFeet = 500;     // length of each (short) tick mark
+
+  const tickLengthMeters = tickLengthFeet * 0.3048;   // convert to meters for use with destinationPoint
+
+  // Right side of travel
+  const tickBearing = bearing + 90;   // perpendicular to the sight line, so ticks point off to its right
+  ticklengthToggle = false            // alternates short/long ticks, starting with a short one
+  for (let mile = tickSpacingMiles; mile <= distanceMiles; mile += tickSpacingMiles) {
+
+      // Point on the sight line at this mile marker.
+      const pointOnLine = destinationPoint(
+          center[0],
+          center[1],
+          bearing,
+          mile * 1609.344
+      );
+
+      drawlength = tickLengthMeters   // default: short tick
+      if (ticklengthToggle)
+          drawlength = tickLengthMeters * 2   // every other tick is drawn twice as long, to ease counting miles
+      ticklengthToggle = !ticklengthToggle    // flip for the next tick
+
+      // End point of this tick mark, offset perpendicular from the sight line.
+      const tickEnd = destinationPoint(
+          pointOnLine[0],
+          pointOnLine[1],
+          tickBearing,
+          drawlength
+      );
+
+      // Draw the tick mark on the map.
+      L.polyline(
+          [pointOnLine, tickEnd],
+          {
+              color: 'red',
+              weight: 2
+          }
+      ).addTo(map);
+
+      // Label the long ticks (every whole mile) with the corresponding
+      // inch value on the real Firefinder rule's own scale of .5" = 1 mi
+      // — so labels read .5, 1, 1.5, 2, ... instead of the mile count —
+      // placed a bit past the tick's far end (away from the sight line).
+      // The ticks themselves are only a few pixels long on screen at most
+      // zoom levels, so the label is offset an extra tickLengthMeters
+      // beyond tickEnd to keep it clearly separated from the line, with
+      // an explicit centered iconAnchor so it doesn't drift toward the line.
+      if (drawlength === tickLengthMeters * 2) {
+          const labelPoint = destinationPoint(
+              pointOnLine[0],
+              pointOnLine[1],
+              tickBearing,
+              drawlength + tickLengthMeters
+          );
+          L.marker(labelPoint, {
+              icon: L.divIcon({
+                  className: 'mile-label',
+                  html: formatInchLabel(mile / 2),
+                  iconSize: [16, 16],
+                  iconAnchor: [8, 8]
+              }),
+              interactive: false
+          }).addTo(map);
+      }
+
+  }
+}
+
+// Draw a square around the origin point
+const halfSide = 75; // meters
+
+// Move north/south from center
+const north = destinationPoint(center[0], center[1], 0, halfSide);
+const south = destinationPoint(center[0], center[1], 180, halfSide);
+
+// Then move east/west from those points
+const nw = destinationPoint(north[0], north[1], 270, halfSide);
+const ne = destinationPoint(north[0], north[1], 90, halfSide);
+const se = destinationPoint(south[0], south[1], 90, halfSide);
+const sw = destinationPoint(south[0], south[1], 270, halfSide);
+
+L.polyline(
+    [nw, ne, se, sw, nw],
+    {
+        color: 'black',
+        weight: 2
+    }
+).addTo(map);
+
+// USFS layer
+const forests = L.esri.featureLayer({
+  url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer/0",
+  style: function () {
+    return {
+      color: "green",
+      weight: 2,
+      fillOpacity: 0.15
+    };
+  }
+});
+
+//Public Land Survey System (PLSS) for Legal grid
+const plssLayer = L.esri.dynamicMapLayer({
+  url: 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer',
+  opacity: 0.7
+});
+let plssVisible = false;
+
+var baseMaps = {
+  "OpenTopoMap": topoLayer
+};
+
+var overlayMaps = {
+  "PLSS (legal)": plssLayer,
+  "USFS": forests
+};
+
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+// Named place labels (from places-data.js), shown/hidden by zoom level.
+// Each place carries its own minZoom/maxZoom, so a marker is added or
+// removed from the map whenever the zoom crosses that place's range,
+// rather than being tied to a fixed set of zoom tiers.
+const placeMarkers = PLACES.map(function (place) {
+  return {
+    place: place,
+    marker: L.marker([place.lat, place.lng], {
+      icon: L.divIcon({
+        className: 'place-label',
+        html: place.name,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      }),
+      interactive: false
+    })
+  };
+});
+
+function updatePlaceVisibility() {
+  const zoom = map.getZoom();
+  for (const { place, marker } of placeMarkers) {
+    let minZoom = 0;
+    if (place.minZoom !== undefined) {
+      minZoom = place.minZoom;
+    }
+    let maxZoom = 99;
+    if (place.maxZoom !== undefined) {
+      maxZoom = place.maxZoom;
+    }
+    const shouldShow = zoom >= minZoom && zoom <= maxZoom;
+    const isShown = map.hasLayer(marker);
+    if (shouldShow && !isShown) {
+      marker.addTo(map);
+    } else if (!shouldShow && isShown) {
+      map.removeLayer(marker);
+    }
+  }
+}
+map.on('zoomend', updatePlaceVisibility);
+updatePlaceVisibility(); // set initial visibility for the starting zoom level
+</script>
+
+</body>
+</html>
