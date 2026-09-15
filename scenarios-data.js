@@ -97,7 +97,7 @@ const SCENARIOS = {
     answers: { 
       classification: "illegitimate",
       azimuth_tolerance_min: 15,
-      distance: { miles: 12.2, tolerance: 0.5 },
+      distance: { miles: 12, tolerance: 0.5 },
       landmark: "Island Park",
       legal: { township: 12, range: 24, section: 25, quarter: "Nw" },
       base_visible: "yes",
@@ -124,7 +124,7 @@ const SCENARIOS = {
     answers: { 
       classification: "illegitimate",
       azimuth_tolerance_min: 15,
-      distance: { miles: 4.8, tolerance: 0.5 },
+      distance: { miles: 5, tolerance: 0.5 },
       landmark: "Wonder Valley",
       legal: { township: 13, range: 28, section: 9, quarter: "SW" },
       base_visible: "no",
@@ -138,28 +138,28 @@ const SCENARIOS = {
     }
   },
 
-  "d3": {
+  "d3": { 
     label: "Delilah #3 (Medium)",  //Deer Crk Rec Area
     lookout: "Delilah",
     photoIds: ["delilah_3"],
     smoke: {
       photoId: "delilah_3",
       overlayImage: "assets/smoke_leaning.png",
-      xPos: 1343, yPos: 400, widthPx: 77,   // pixel coords on the 1920x968 native photo
+      xPos: 1275, yPos: 396, widthPx: 77,   // pixel coords on the 1920x968 native photo
       closeupImage: "images/closeups/scenario3_closeup.png"
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 15,
-      distance: { miles: 4.8, tolerance: 0.5 },
+      azimuth_tolerance_min: 30,
+      distance: { miles: 13, tolerance: 0.5 },
       landmark: "Deer Crk Rec Area",
-      legal: { township: 13, range: 28, section: 9, quarter: "SW" },
-      base_visible: "no",
+      legal: { township: 12, range: 24, section: 27, quarter: "NW" },
+      base_visible: "yes",
       volume: ["small"],
-      color: ["white"],
-      character: ["thin"],
-      drift: "E",
-      fuel: ["brush"],
+      color: ["grey"],
+      character: ["Billowing"],
+      drift: "N",
+      fuel: ["grass"],
       jurisdiction: "FKU",
       dispatcher: "sierra"
     }
@@ -177,14 +177,14 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 15,
-      distance: { miles: 4.8, tolerance: 0.5 },
+      azimuth_tolerance_min: 30,
+      distance: { miles: 19, tolerance: 0.5 },
       landmark: "Piedra road silo",
-      legal: { township: 13, range: 28, section: 9, quarter: "SW" },
+      legal: { township: 14, range: 23, section: 3, quarter: "NE" },
       base_visible: "yes",
       volume: ["small"],
       color: ["grey"],
-      character: ["thin"],
+      character: ["Billowing"],
       drift: "S",
       fuel: ["brush"],
       jurisdiction: "FKU",
@@ -205,17 +205,17 @@ const SCENARIOS = {
     answers: { 
       classification: "illegitimate",
       azimuth_tolerance_min: 15,
-      distance: { miles: 4.8, tolerance: 0.5 },
+      distance: { miles: 10, tolerance: 0.5 },
       landmark: "Logger Point",
-      legal: { township: 13, range: 28, section: 9, quarter: "SW" },
+      legal: { township: 14, range: 27, section: 13, quarter: "SW" },
       base_visible: "no",
       volume: ["small"],
       color: ["white"],
-      character: ["thin"],
+      character: ["Billowing"],
       drift: "E",
-      fuel: ["brush"],
-      jurisdiction: "FKU",
-      dispatcher: "sierra"
+      fuel: ["timber"],
+      jurisdiction: "SQF",
+      dispatcher: "porterville"
     }
   },
 
@@ -231,18 +231,18 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 10,
-      distance: null,
+      azimuth_tolerance_min: 30,
+      distance: { miles: 10, tolerance: 0.5 },
       landmark: "Manzanita Hill",
-      legal: null,
-      base_visible: "no",
+      legal: { township: 13, range: 28, section: 32, quarter: "SE" },
+      base_visible: "yes",
       volume: ["small"],
       color: ["white"],
-      character: ["thin", "puffing"],
-      drift: "W",
-      fuel: [],
-      jurisdiction: "FKU",
-      dispatcher: "none"
+      character: ["Billowing"],
+      drift: "N",
+      fuel: ["brush"],
+      jurisdiction: "SEKI",
+      dispatcher: "Ash Mtn Fire"
     }
   },
 
@@ -258,15 +258,15 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 10,
-      distance: 12.5,
+      azimuth_tolerance_min: 60,
+      distance: { miles: 12, tolerance: 0.5 },
       landmark: "Rough Creek",
-      legal: null,
+      legal: { township: 12, range: 28, section: 16, quarter: "NW" },,
       base_visible: "no",
       volume: ["small"],
       color: ["white"],
       character: ["thin"],
-      drift: "N",
+      drift: "none",
       fuel: ["timber"],
       jurisdiction: "SNF",
       dispatcher: "Sierra"
@@ -286,17 +286,17 @@ const SCENARIOS = {
     answers: { 
       classification: "false",
       azimuth_tolerance_min: 30,  // tolerance in minutes
-      distance: { miles: 2.5, tolerance: 0.5 },
+      distance: { miles: 3, tolerance: 0.6 },
       landmark: "Sequoia Highlands Camp",
-      legal: { township: 15, range: 27, section: 3, quarter: "NW" },
+      legal: { township: 13, range: 26, section: 25, quarter: "NE" },
       base_visible: "yes",
       volume: ["small"],
       color: ["brown"],
-      character: ["column", "heavy"],
+      character: ["column"],
       drift: "none",
       fuel: ["timber"],
       jurisdiction: "SQF",
-      dispatcher: "None"
+      dispatcher: "Porterville"
     }
   },
 
