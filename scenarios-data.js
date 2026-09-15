@@ -261,7 +261,7 @@ const SCENARIOS = {
       azimuth_tolerance_min: 60,
       distance: { miles: 12, tolerance: 0.5 },
       landmark: "Rough Creek",
-      legal: { township: 12, range: 28, section: 16, quarter: "NW" },,
+      legal: { township: 12, range: 28, section: 16, quarter: "NW" },
       base_visible: "no",
       volume: ["small"],
       color: ["white"],
