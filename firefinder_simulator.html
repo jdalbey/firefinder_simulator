@@ -283,6 +283,47 @@
     z-index: 1102;
   }
   #modal-close:hover { background: rgba(255,255,255,0.3); }
+
+  /* Map modal — shown in-page (instead of window.open) so opening it
+     doesn't drop the browser out of fullscreen the way creating a new
+     tab/window always does. */
+  #map-modal-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    animation: backdropIn 0.25s ease forwards;
+  }
+  #map-modal-backdrop.visible { display: flex; align-items: center; justify-content: center; }
+
+  #map-modal-content {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+  }
+
+  #map-iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    background: #fff;
+  }
+
+  #map-modal-close {
+    position: absolute;
+    top: -14px; right: -14px;
+    width: 28px; height: 28px;
+    border-radius: 50%; border: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff; font-size: 16px;
+    line-height: 28px; text-align: center;
+    cursor: pointer; transition: background 0.15s;
+    z-index: 1102;
+  }
+  #map-modal-close:hover { background: rgba(255,255,255,0.3); }
 </style>
 </head>
 <body>
@@ -443,6 +484,14 @@
   <div id="modal-content">
     <button id="modal-close" aria-label="Close">&#10005;</button>
     <img id="modal-img" src="" alt="Smoke closeup">
+  </div>
+</div>
+
+<!-- ── Map view modal ───────────────────────────────────────────── -->
+<div id="map-modal-backdrop" role="dialog" aria-modal="true" aria-label="Map view">
+  <div id="map-modal-content">
+    <button id="map-modal-close" aria-label="Close">&#10005;</button>
+    <iframe id="map-iframe" title="Map view" src="about:blank"></iframe>
   </div>
 </div>
 
@@ -691,6 +740,8 @@ const sightCvs     = document.getElementById('sight-canvas');
 const azCvs        = document.getElementById('azimuth-canvas');
 const binoBackdrop  = document.getElementById('modal-backdrop');
 const binoImg       = document.getElementById('modal-img');
+const mapBackdrop   = document.getElementById('map-modal-backdrop');
+const mapIframe     = document.getElementById('map-iframe');
 const initialState   = document.getElementById('initial-state');
 const photoArea      = document.getElementById('photo-area');
 const hintRow        = document.getElementById('firefinder-hint-row');
@@ -977,15 +1028,28 @@ binoBackdrop.addEventListener('click', e => {
 });
 
 //--- Map View ------------------------------------------------------------
+// Shown in an in-page iframe modal rather than window.open()'d into a new
+// tab — opening any new tab/window forces the browser out of fullscreen, so
+// a popup would silently kick the trainee out of fullscreen every time they
+// checked the map.
 function openMapView() {
-  if (sightVisible) {
-    window.open(`mapview/mapview.html?bearing=${currentAz().toFixed(2)}`, 'mapview');
-  } else {
-    window.open('mapview/mapview.html', 'mapview');
-  }
+  const src = sightVisible
+    ? `mapview/mapview.html?bearing=${currentAz().toFixed(2)}`
+    : 'mapview/mapview.html';
+  mapIframe.src = src;
+  mapBackdrop.classList.add('visible');
+}
+
+function closeMapView() {
+  mapBackdrop.classList.remove('visible');
+  mapIframe.src = 'about:blank';
 }
 
 document.getElementById('btn-map').addEventListener('click', openMapView);
+document.getElementById('map-modal-close').addEventListener('click', closeMapView);
+mapBackdrop.addEventListener('click', e => {
+  if (e.target === mapBackdrop) { closeMapView(); }
+});
 
 const expandIconImg = document.getElementById('expand-icon-img');
 
@@ -1559,6 +1623,7 @@ document.addEventListener('keydown', e => {
     helpBackdrop.classList.remove('open');
     closeReport();
     closeBinoculars();
+    closeMapView();
     return;
   }
 
