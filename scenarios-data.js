@@ -84,7 +84,7 @@ const SCENARIOS = {
     smoke: {
       photoId: "delilah_3",
       overlayImage: "assets/smoke_white.png",
-      xPos: 1572, yPos: 429, widthPx: 174,   // 
+      xPos: 1572, yPos: 429, widthPx: 174, // pixel coords on the 1920x968 native photo
       closeupImage: "images/closeups/scenario1_closeup.png"
     },
     answers: {  
@@ -139,7 +139,6 @@ const SCENARIOS = {
       photoId: "delilah_3",
       overlayImage: "assets/smoke_leaning.png",
       xPos: 1245, yPos: 396, widthPx: 312,   // deer crk
-      // xPos: 771, yPos: 296, widthPx: 312,   // hughes mtn
       closeupImage: "images/closeups/scenario3_closeup.png"
     },
     answers: { 
@@ -193,7 +192,7 @@ const SCENARIOS = {
     smoke: {
       photoId: "delilah_12",
       overlayImage: "assets/smoke_forestfire.png",
-      xPos: 1525, yPos: 350, widthPx: 125,   // done
+      xPos: 1525, yPos: 350, widthPx: 125,  // pixel coords on the 1919x881 native photo
       closeupImage: "images/closeups/scenario5_closeup.png"
     },
     answers: { 

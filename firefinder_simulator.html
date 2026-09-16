@@ -462,7 +462,7 @@
     <table>
       <tr><td align="center"><kbd>B</kbd></td><td>Binoculars</td></tr>
       <tr><td align="center"><kbd>F</kbd></td><td>Toggle firefinder</td></tr>
-      <tr><td align="center"><kbd>M</kbd></td><td>Open Map view in a separate tab</td></tr>
+      <tr><td align="center"><kbd>M</kbd></td><td>Open Map view</td></tr>
       <tr><td align="center"><kbd>R</kbd></td><td>Toggle smoke report form</td></tr>
       <tr><td align="center"><kbd>H</kbd><kbd>?</kbd></td><td>Toggle Help screen</td></tr>
       <tr><td align="center"><kbd>Page Up</kbd><kbd>Page Dn</kbd></td><td>Previous/Next photograph</td></tr>
@@ -974,16 +974,6 @@ function initFirefinder() {
 photoEl.addEventListener('load', () => requestAnimationFrame(initFirefinder));
 if (photoEl.complete && photoEl.naturalWidth > 0) requestAnimationFrame(initFirefinder);
 window.addEventListener('resize', () => requestAnimationFrame(initFirefinder));
-// Mouse Listener to move sight
-//photoEl.addEventListener('click', e => {
-//if (sightVisible)
-//{
-//    const rect = photoEl.getBoundingClientRect();
-//    sightFrac = Math.max(0, Math.min(1, (e.clientX - rect.left) /
-//  rect.width));
-//    render();
-//}
-//});
 
 // ── Sight toggle ───────────────────────────────────────────────────
 function toggleSight() {
@@ -1086,13 +1076,6 @@ document.addEventListener('fullscreenchange', () => {
   
 // ── Azimuth math ───────────────────────────────────────────────────
 function currentAz() { return ((LEFT_AZ + sightFrac * AZ_RANGE) % 360 + 360) % 360; }
-
-function azDegMin() {
-  const az  = currentAz();
-  const deg = Math.floor(az);
-  const min = Math.round((az - deg) * 60);
-  return min === 60 ? { deg: deg + 1, min: 0 } : { deg, min };
-}
 
 // ── Render ─────────────────────────────────────────────────────────
 function render() {
@@ -1283,7 +1266,10 @@ function setFeedback(el, text, correct, correctText) {
 // labelForValue('rpt-lookout', 'buck_rock') -> 'Buck Rock'. Falls back to
 // the raw value if no matching input/label is found.
 function labelForValue(name, value) {
-  const input = document.querySelector('input[name="' + name + '"][value="' + value + '"]');
+  // "i" makes the value match case-insensitively — answer keys in
+  // scenarios-data.js aren't consistently cased against the radio/checkbox
+  // value="..." attributes (e.g. "Sierra" vs value="sierra").
+  const input = document.querySelector('input[name="' + name + '"][value="' + value + '" i]');
   if (!input) { return value; }
   const label = input.closest('label');
   if (!label) { return value; }
@@ -1367,8 +1353,6 @@ function scenarioCorrectAzimuth(scenario) {
   if (!photo || photo.left_azimuth == null || photo.right_azimuth == null) return null;
   const span = azSpan(photo.left_azimuth, photo.right_azimuth);
   const frac = scenario.smoke.xPos / photo.width;
-  console.log("span: ", span);
-  console.log("frac: ", frac)
   return ((photo.left_azimuth + frac * span) % 360 + 360) % 360;
 }
 
@@ -1566,7 +1550,6 @@ function gradeAllFields(scenario) {
   gradeRadio('color', 'color-feedback', answers.color && answers.color[0]);
   gradeCheckboxGroup('character', 'character-feedback', answers.character);
   gradeRadio('drift', 'drift-feedback', answers.drift);
-  //gradeCheckboxGroup('fuel', 'fuel-feedback', answers.fuel); //OPTIONAL
   gradeRadio('jurisdiction', 'jurisdiction-feedback', answers.jurisdiction);
   gradeRadio('dispatcher', 'dispatcher-feedback', answers.dispatcher);
   // Time/Date and Best Access have no answer key (no ground truth to check

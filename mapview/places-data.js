@@ -1,4 +1,4 @@
-// Named place labels for mapview_enhanced.html
+// Named place labels for mapview.html
 //
 // Loaded via a plain <script> tag (not fetch/JSON), so the map keeps working
 // when the HTML file is opened directly (file://) with no local server —

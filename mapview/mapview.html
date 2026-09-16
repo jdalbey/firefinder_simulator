@@ -152,10 +152,10 @@ function formatInchLabel(inches) {
   //    14 → neighborhood
   const map = L.map('map').setView([centerLat, centerLng], 12);
 
-  // Local tiles (downloaded by fetch_tiles.py) with CDN fallback
+  // Local tiles (downloaded by fetch_tiles_by_latlong.py) with CDN fallback
   // Previous CDN sources:
   //   'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
-  //   'https://api.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=6a29db114508452294f5963855c41137'
+  //   'https://api.thunderforest.com/outdoors/{z}/{x}/{y}.png
   const topoLayer = L.tileLayer(
     'tiles/{z}/{x}/{y}.png',
     {
@@ -188,7 +188,7 @@ if (hasBearing) {
 
   // Right side of travel
   const tickBearing = bearing + 90;   // perpendicular to the sight line, so ticks point off to its right
-  ticklengthToggle = false            // alternates short/long ticks, starting with a short one
+  let ticklengthToggle = false;       // alternates short/long ticks, starting with a short one
   for (let mile = tickSpacingMiles; mile <= distanceMiles; mile += tickSpacingMiles) {
 
       // Point on the sight line at this mile marker.
@@ -199,10 +199,10 @@ if (hasBearing) {
           mile * 1609.344
       );
 
-      drawlength = tickLengthMeters   // default: short tick
+      let drawlength = tickLengthMeters;   // default: short tick
       if (ticklengthToggle)
-          drawlength = tickLengthMeters * 2   // every other tick is drawn twice as long, to ease counting miles
-      ticklengthToggle = !ticklengthToggle    // flip for the next tick
+          drawlength = tickLengthMeters * 2;   // every other tick is drawn twice as long, to ease counting miles
+      ticklengthToggle = !ticklengthToggle;    // flip for the next tick
 
       // End point of this tick mark, offset perpendicular from the sight line.
       const tickEnd = destinationPoint(
