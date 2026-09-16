@@ -29,8 +29,10 @@ const LOOKOUTS = {
   "Delilah": {
     photos: [
       { id: "delilah_1",  src: "images/Landmarks_Delilah1.png",  width: 1920, height: 968,  left_azimuth: 223.11,  right_azimuth: 247.14},
-      { id: "delilah_2",  src: "images/Landmarks_Delilah2.png",  width: 1920, height: 892,  left_azimuth: 247.0, right_azimuth: 271.16 }, 
+      { id: "delilah_2",  src: "images/Landmarks_Delilah2.png",  width: 1920, height: 892,  left_azimuth: 247.0, right_azimuth: 271.16 },
       { id: "delilah_3",  src: "images/Landmarks_Delilah3.png",  width: 1920, height: 870,  left_azimuth: 271.38, right_azimuth: 295.36 },
+// From image to bearing calc
+//      { id: "delilah_3",  src: "images/Landmarks_Delilah3_narrow.png",  width: 1847, height: 870,  left_azimuth: 272.29, right_azimuth: 295.36},
       { id: "delilah_4",  src: "images/Landmarks_Delilah4.png",  width: 1920, height: 921,  left_azimuth: 293.82, right_azimuth: 321.12 }, 
       { id: "delilah_5",  src: "images/Landmarks_Delilah5.png",  width: 1920, height: 1009, left_azimuth: 317.41, right_azimuth: 338.55 }, 
       { id: "delilah_6",  src: "images/Landmarks_Delilah6.png",  width: 1920, height: 1146, left_azimuth: 338.55, right_azimuth: 359.03 }, 

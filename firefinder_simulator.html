@@ -1109,24 +1109,36 @@ function drawStrip() {
   // RIGHT_AZ, m=AZ_RANGE*60 is LEFT_AZ) — just no longer clamped to [0,
   // AZ_RANGE*60], since the window now extends DIAL_RANGE_DEG wide around
   // the photo's midpoint rather than stopping at the photo's own edges.
+  //
+  // The tick grid is anchored to absolute bearings (multiples of 0.5°), not
+  // to plain multiples of 30 in m. RIGHT_AZ is real survey data with an
+  // arbitrary fractional part, so a grid built from bare m%30/m%60 would put
+  // ticks at fractional-degree positions while still labeling them with a
+  // rounded whole number — silently misreading the scale by up to 30' for
+  // anyone using it (label + vernier minutes) exactly as designed. `phase`
+  // shifts the whole grid so ticks fall exactly on true half-degree bearings
+  // and their printed labels match their actual position.
   ctx.strokeStyle = '#282828'; ctx.fillStyle = '#282828'; ctx.lineWidth = 1;
-  const mStart = 30 * Math.floor(windowStart / 30);
-  const mEnd   = 30 * Math.ceil((windowStart + DIAL_RANGE_DEG * 60) / 30);
+  const phase  = ((RIGHT_AZ * 60) % 30 + 30) % 30;
+  const mStart = phase + 30 * Math.floor((windowStart - phase) / 30);
+  const mEnd   = phase + 30 * Math.ceil((windowStart + DIAL_RANGE_DEG * 60 - phase) / 30);
   for (let m = mStart; m <= mEnd; m += 30) {
     const x = (m - windowStart) * ppm;
     if (x < -20 || x > W + 20) continue;
 
-    const deg    = ((RIGHT_AZ - m / 60) % 360 + 360) % 360;
-    const isDeg  = (m % 60  === 0);
-    const is5deg = isDeg && (Math.round(deg) % 5 === 0);
-    const th     = is5deg ? BH * 0.60 : isDeg ? BH * 0.42 : BH * 0.26;
+    const deg      = ((RIGHT_AZ - m / 60) % 360 + 360) % 360;
+    const halfSteps = Math.round(deg * 2);   // snap out float noise; deg is already ~a 0.5° multiple
+    const degWhole  = halfSteps / 2;
+    const isDeg     = (halfSteps % 2 === 0);
+    const is5deg    = isDeg && (((Math.round(degWhole) % 5) + 5) % 5 === 0);
+    const th        = is5deg ? BH * 0.60 : isDeg ? BH * 0.42 : BH * 0.26;
 
     ctx.beginPath(); ctx.moveTo(x, bpTop); ctx.lineTo(x, bpTop + th); ctx.stroke();
 
-    if (isDeg && Math.round(deg) % 5 === 0) {
+    if (is5deg) {
       ctx.font = '12px Georgia';
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-      ctx.fillText(Math.round(deg), x, bpTop + th + 2);
+      ctx.fillText(Math.round(degWhole), x, bpTop + th + 2);
     }
   }
 
@@ -1291,6 +1303,8 @@ function scenarioCorrectAzimuth(scenario) {
   if (!photo || photo.left_azimuth == null || photo.right_azimuth == null) return null;
   const span = azSpan(photo.left_azimuth, photo.right_azimuth);
   const frac = scenario.smoke.xPos / photo.width;
+  console.log("span: ", span);
+  console.log("frac: ", frac)
   return ((photo.left_azimuth + frac * span) % 360 + 360) % 360;
 }
 

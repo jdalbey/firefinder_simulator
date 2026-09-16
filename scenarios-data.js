@@ -69,14 +69,7 @@
 //                  the smoke is actually drawn. Only its grading tolerance
 //                  (azimuth_tolerance_min) lives here.
 //
-// ⚠ TODO — every field under `answers` below (distance, landmark, legal
-//   description, jurisdiction, dispatcher, volume/color/character/drift,
-//   fuel) is SAMPLE/PLACEHOLDER content EXCEPT for scenario "d1", not real
-//   survey data. evaluateReport() in firefinder_simulator.html now grades
-//   all of these fields (plus Lookout Name and Azimuth) against whatever is
-//   here, so a placeholder-answer scenario will mark correct trainee input
-//   as wrong until its `answers` are replaced with real data. (Time/Date
-//   and Best Access have no answer key and are never graded.)
+//   (Time/Date and Best Access have no answer key and are never graded.)
 //
 // "Random" in the Scenario dropdown is not a data entry here — the app
 // picks a random scenario id (excluding itself) that matches the selected
@@ -90,16 +83,16 @@ const SCENARIOS = {
     photoIds: ["delilah_3"],
     smoke: {
       photoId: "delilah_3",
-      overlayImage: "assets/white_smoke.png",
-      xPos: 1606, yPos: 434, widthPx: 96,   // pixel coords on the 1920x870 native photo
+      overlayImage: "assets/smoke_white.png",
+      xPos: 1572, yPos: 429, widthPx: 174,   // 
       closeupImage: "images/closeups/scenario1_closeup.png"
     },
-    answers: { 
+    answers: {  
       classification: "illegitimate",
-      azimuth_tolerance_min: 15,
+      azimuth_tolerance_min: 10,
       distance: { miles: 12, tolerance: 0.5 },
       landmark: "Island Park",
-      legal: { township: 12, range: 24, section: 25, quarter: "Nw" },
+      legal: { township: 12, range: 24, section: 25, quarter: "NW" },
       base_visible: "yes",
       volume: ["medium"],
       color: ["white"],
@@ -123,18 +116,18 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 15,
+      azimuth_tolerance_min: 10,
       distance: { miles: 5, tolerance: 0.5 },
       landmark: "Wonder Valley",
       legal: { township: 13, range: 28, section: 9, quarter: "SW" },
-      base_visible: "no",
+      base_visible: "yes",
       volume: ["small"],
-      color: ["white"],
-      character: ["thin"],
-      drift: "E",
+      color: ["black"],
+      character: ["column"],
+      drift: "S",
       fuel: ["brush"],
       jurisdiction: "FKU",
-      dispatcher: "sierra"
+      dispatcher: "Porterville"
     }
   },
 
@@ -144,13 +137,14 @@ const SCENARIOS = {
     photoIds: ["delilah_3"],
     smoke: {
       photoId: "delilah_3",
-      overlayImage: "assets/smoke_leaning.png",
-      xPos: 1275, yPos: 396, widthPx: 77,   // pixel coords on the 1920x968 native photo
+      overlayImage: "assets/smoke_leaning_wide.png",
+      xPos: 1245, yPos: 396, widthPx: 312,   // deer crk
+//      xPos: 771, yPos: 296, widthPx: 312,   // hughes mtn
       closeupImage: "images/closeups/scenario3_closeup.png"
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 30,
+      azimuth_tolerance_min: 10,
       distance: { miles: 13, tolerance: 0.5 },
       landmark: "Deer Crk Rec Area",
       legal: { township: 12, range: 24, section: 27, quarter: "NW" },
@@ -177,7 +171,7 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 30,
+      azimuth_tolerance_min: 10,
       distance: { miles: 19, tolerance: 0.5 },
       landmark: "Piedra road silo",
       legal: { township: 14, range: 23, section: 3, quarter: "NE" },
@@ -199,12 +193,12 @@ const SCENARIOS = {
     smoke: {
       photoId: "delilah_12",
       overlayImage: "assets/smoke_forestfire.png",
-      xPos: 1490, yPos: 352, widthPx: 77,   // pixel coords on the 1920x968 native photo
+      xPos: 1525, yPos: 350, widthPx: 125,   // done
       closeupImage: "images/closeups/scenario5_closeup.png"
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 15,
+      azimuth_tolerance_min: 10,
       distance: { miles: 10, tolerance: 0.5 },
       landmark: "Logger Point",
       legal: { township: 14, range: 27, section: 13, quarter: "SW" },
@@ -231,7 +225,7 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 30,
+      azimuth_tolerance_min: 10,
       distance: { miles: 10, tolerance: 0.5 },
       landmark: "Manzanita Hill",
       legal: { township: 13, range: 28, section: 32, quarter: "SE" },
@@ -258,7 +252,7 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "illegitimate",
-      azimuth_tolerance_min: 60,
+      azimuth_tolerance_min: 50,
       distance: { miles: 12, tolerance: 0.5 },
       landmark: "Rough Creek",
       legal: { township: 12, range: 28, section: 16, quarter: "NW" },
@@ -285,7 +279,7 @@ const SCENARIOS = {
     },
     answers: { 
       classification: "false",
-      azimuth_tolerance_min: 30,  // tolerance in minutes
+      azimuth_tolerance_min: 10,  // tolerance in minutes
       distance: { miles: 3, tolerance: 0.6 },
       landmark: "Sequoia Highlands Camp",
       legal: { township: 13, range: 26, section: 25, quarter: "NE" },
