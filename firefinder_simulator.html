@@ -757,6 +757,7 @@ const actionButtons = ['btn-binoculars','btn-firefinder','btn-map','btn-report',
                         .map(id => document.getElementById(id));
 
 // ── Dropdown population (LOOKOUTS / SCENARIOS come from the data files) ──
+// Fills the Lookout dropdown with one option per key in LOOKOUTS.
 function populateLookoutSelect() {
   lookoutSel.innerHTML = '';
   Object.keys(LOOKOUTS).forEach(name => {
@@ -767,10 +768,12 @@ function populateLookoutSelect() {
   });
 }
 
+// Returns the ids of all SCENARIOS belonging to the given Lookout.
 function scenariosForLookout(lookoutName) {
   return Object.keys(SCENARIOS).filter(id => SCENARIOS[id].lookout === lookoutName);
 }
 
+// Fills the Scenario dropdown with the given Lookout's scenarios, plus a Random option.
 function populateScenarioSelect(lookoutName) {
   scenarioSel.innerHTML = '';
   const placeholder = document.createElement('option');
@@ -794,11 +797,13 @@ function populateScenarioSelect(lookoutName) {
   }
 }
 
+// Picks a random scenario id from the given Lookout's scenarios.
 function pickRandomScenario(lookoutName) {
   const ids = scenariosForLookout(lookoutName);
   return ids[Math.floor(Math.random() * ids.length)];
 }
 
+// Returns the UI to its pre-scenario state (landing panel visible, controls disabled).
 function resetToInitialState() {
   initialState.style.display = '';
   photoArea.style.display    = 'none';
@@ -821,6 +826,7 @@ lookoutSel.addEventListener('change', () => {
 });
 
 // ── Scenario activation ────────────────────────────────────────────
+// Loads the given scenario (resolving "random") and shows its first photo.
 function activateScenario(scenarioId) {
   let resolvedId = scenarioId;
   if (resolvedId === 'random') {
@@ -875,7 +881,9 @@ helpBackdrop.addEventListener('click', e => {
 });
 
 // ── Report modal ───────────────────────────────────────────────────
+// Shows the Smoke Report form.
 function openReport()  { reportPage.classList.add('open'); }
+// Hides the Smoke Report form.
 function closeReport() { reportPage.classList.remove('open'); }
 
 document.getElementById('btn-report').addEventListener('click', () => {
@@ -888,6 +896,7 @@ document.getElementById('btn-report').addEventListener('click', () => {
 document.getElementById('report-close').addEventListener('click', closeReport);
 
 // ── Photo/scenario rendering ─────────────────────────────────────────
+// Switches to the photo at the given index and updates the bearing display.
 function showPhoto(idx) {
   const photo = currentPhotos[idx];
   if (!photo) return;
@@ -927,6 +936,7 @@ function updateCompassArrow() {
 }
 
 // ── Firefinder init ────────────────────────────────────────────────
+// Sizes the overlay canvases to the current photo and positions the smoke overlay.
 function initFirefinder() {
   PW = photoEl.offsetWidth;
   PH = photoEl.offsetHeight;
@@ -976,6 +986,7 @@ if (photoEl.complete && photoEl.naturalWidth > 0) requestAnimationFrame(initFire
 window.addEventListener('resize', () => requestAnimationFrame(initFirefinder));
 
 // ── Sight toggle ───────────────────────────────────────────────────
+// Shows/hides the firefinder crosshair and azimuth scale.
 function toggleSight() {
   sightVisible = !sightVisible;
   if (sightVisible && !sightShownOnce) { sightFrac = 0.5; sightShownOnce = true; }
@@ -985,6 +996,7 @@ function toggleSight() {
 document.getElementById('btn-firefinder').addEventListener('click', toggleSight);
 
 // ── Binoculars closeup ─────────────────────────────────────────────
+// Opens the zoomed-in closeup modal for the current scenario's smoke.
 function openBinoculars() {
   const photoRect = photoEl.getBoundingClientRect();
   const cx = photoRect.left + photoRect.width  / 2;
@@ -1006,6 +1018,7 @@ function openBinoculars() {
   binoBackdrop.classList.add('visible');
 }
 
+// Closes the binoculars closeup modal.
 function closeBinoculars() {
   binoBackdrop.classList.remove('visible');
   setTimeout(() => { binoImg.src = ''; }, 300);
@@ -1030,6 +1043,7 @@ function openMapView() {
   mapBackdrop.classList.add('visible');
 }
 
+// Closes the Map view modal.
 function closeMapView() {
   mapBackdrop.classList.remove('visible');
   mapIframe.src = 'about:blank';
@@ -1045,6 +1059,7 @@ const expandIconImg = document.getElementById('expand-icon-img');
 
 document.getElementById('btn-expand').addEventListener('click', toggleFullscreen);
 
+// Enters or exits browser fullscreen, trying vendor-prefixed APIs as needed.
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     const el = document.documentElement;
@@ -1075,9 +1090,11 @@ document.addEventListener('fullscreenchange', () => {
 });
   
 // ── Azimuth math ───────────────────────────────────────────────────
+// Returns the true bearing the firefinder sight is currently aimed at.
 function currentAz() { return ((LEFT_AZ + sightFrac * AZ_RANGE) % 360 + 360) % 360; }
 
 // ── Render ─────────────────────────────────────────────────────────
+// Redraws the sight crosshair and azimuth strip (or clears them when hidden).
 function render() {
   if (sightVisible) {
     drawSight();
@@ -1091,6 +1108,7 @@ function render() {
 }
 
 // ── Sight overlay ──────────────────────────────────────────────────
+// Draws the crosshair sight at its current position on the photo.
 function drawSight() {
   const ctx = sightCvs.getContext('2d');
   ctx.clearRect(0, 0, PW, PH);
@@ -1233,6 +1251,7 @@ function drawStrip() {
 }
 
 // ── Utility ────────────────────────────────────────────────────────
+// Traces a rounded-rectangle path on the canvas context (caller strokes/fills it).
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -1356,6 +1375,7 @@ function scenarioCorrectAzimuth(scenario) {
   return ((photo.left_azimuth + frac * span) % 360 + 360) % 360;
 }
 
+// Grades the Azimuth degrees/minutes fields against the derived correct bearing.
 function gradeAzimuth(scenario) {
   const fb = document.getElementById('azimuth-feedback');
   const correctAz = scenarioCorrectAzimuth(scenario);
@@ -1375,6 +1395,7 @@ function gradeAzimuth(scenario) {
   else { setFeedback(fb, 'X', false, formatAzimuth(correctAz)); }
 }
 
+// Grades the Distance field against the scenario's answer key, within tolerance.
 function gradeDistance(scenario) {
   const fb = document.getElementById('distance-feedback');
   const ans = scenario && scenario.answers.distance;
@@ -1390,6 +1411,7 @@ function gradeDistance(scenario) {
   }
 }
 
+// Grades the Legal Description (township/range/section/quarter) fields.
 function gradeLegal(scenario) {
   const fb  = document.getElementById('legal-feedback');
   const ans = scenario && scenario.answers.legal;
@@ -1530,6 +1552,7 @@ function requiredFieldChecks(scenario) {
   return checks;
 }
 
+// Grades every field in the Smoke Report against the current scenario's answer key.
 function gradeAllFields(scenario) {
   const answers = scenario && scenario.answers;
 
@@ -1556,6 +1579,7 @@ function gradeAllFields(scenario) {
   // against) and are intentionally left ungraded.
 }
 
+// Handles Submit: checks required fields are filled, then grades the whole report.
 function evaluateReport() {
   const scenario = currentScenario;
 
@@ -1589,6 +1613,7 @@ function evaluateReport() {
 
 document.getElementById('submit-btn').addEventListener('click', evaluateReport);
 
+// Clears every Smoke Report input and feedback message.
 function clearReport() {
   document.querySelectorAll('#report-body input[type="text"], #report-body input[type="number"]')
     .forEach(el => el.value = '');

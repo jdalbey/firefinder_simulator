@@ -320,6 +320,7 @@ const placeMarkers = PLACES.map(function (place) {
   };
 });
 
+// Shows/hides each named-place marker based on whether the current zoom is in its range.
 function updatePlaceVisibility() {
   const zoom = map.getZoom();
   for (const { place, marker } of placeMarkers) {
