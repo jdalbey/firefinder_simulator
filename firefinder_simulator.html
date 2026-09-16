@@ -1573,6 +1573,15 @@ function gradeAllFields(scenario) {
   gradeRadio('color', 'color-feedback', answers.color && answers.color[0]);
   gradeCheckboxGroup('character', 'character-feedback', answers.character);
   gradeRadio('drift', 'drift-feedback', answers.drift);
+  // Fuel Type is optional — gradeCheckboxGroup() would otherwise flag a
+  // blank-but-has-an-answer-key field as "required", which is wrong for an
+  // optional field. Only grade it if the trainee actually checked something;
+  // leave it ungraded (no feedback at all) if they skipped it.
+  if (document.querySelectorAll('input[name="fuel"]:checked').length > 0) {
+    gradeCheckboxGroup('fuel', 'fuel-feedback', answers.fuel);
+  } else {
+    document.getElementById('fuel-feedback').textContent = '';
+  }
   gradeRadio('jurisdiction', 'jurisdiction-feedback', answers.jurisdiction);
   gradeRadio('dispatcher', 'dispatcher-feedback', answers.dispatcher);
   // Time/Date and Best Access have no answer key (no ground truth to check
