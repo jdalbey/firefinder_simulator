@@ -110,7 +110,7 @@ const SCENARIOS = {
     photoIds: ["delilah_2"],
     smoke: {
       photoId: "delilah_2",
-      overlayImage: "assets/black_smoke.png",
+      overlayImage: "assets/smoke_black.png",
       xPos: 1450, yPos: 438, widthPx: 77,   // pixel coords on the 1920x968 native photo
       closeupImage: "images/closeups/scenario2_closeup.png"
     },
@@ -121,7 +121,7 @@ const SCENARIOS = {
       landmark: "Wonder Valley",
       legal: { township: 13, range: 28, section: 9, quarter: "SW" },
       base_visible: "yes",
-      volume: ["small"],
+      volume: ["medium"],
       color: ["black"],
       character: ["column"],
       drift: "S",
@@ -137,9 +137,9 @@ const SCENARIOS = {
     photoIds: ["delilah_3"],
     smoke: {
       photoId: "delilah_3",
-      overlayImage: "assets/smoke_leaning_wide.png",
+      overlayImage: "assets/smoke_leaning.png",
       xPos: 1245, yPos: 396, widthPx: 312,   // deer crk
-//      xPos: 771, yPos: 296, widthPx: 312,   // hughes mtn
+      // xPos: 771, yPos: 296, widthPx: 312,   // hughes mtn
       closeupImage: "images/closeups/scenario3_closeup.png"
     },
     answers: { 
@@ -149,7 +149,7 @@ const SCENARIOS = {
       landmark: "Deer Crk Rec Area",
       legal: { township: 12, range: 24, section: 27, quarter: "NW" },
       base_visible: "yes",
-      volume: ["small"],
+      volume: ["medium"],
       color: ["grey"],
       character: ["Billowing"],
       drift: "N",
@@ -176,7 +176,7 @@ const SCENARIOS = {
       landmark: "Piedra road silo",
       legal: { township: 14, range: 23, section: 3, quarter: "NE" },
       base_visible: "yes",
-      volume: ["small"],
+      volume: ["medium"],
       color: ["grey"],
       character: ["Billowing"],
       drift: "S",
@@ -202,8 +202,8 @@ const SCENARIOS = {
       distance: { miles: 10, tolerance: 0.5 },
       landmark: "Logger Point",
       legal: { township: 14, range: 27, section: 13, quarter: "SW" },
-      base_visible: "no",
-      volume: ["small"],
+      base_visible: "yes",
+      volume: ["medium"],
       color: ["white"],
       character: ["Billowing"],
       drift: "E",
@@ -232,7 +232,7 @@ const SCENARIOS = {
       base_visible: "yes",
       volume: ["small"],
       color: ["white"],
-      character: ["Billowing"],
+      character: ["column"],
       drift: "N",
       fuel: ["brush"],
       jurisdiction: "SEKI",
