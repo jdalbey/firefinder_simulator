@@ -305,7 +305,7 @@ const SCENARIOS = {
     answers: { 
       classification: "illegitimate",
       azimuth_tolerance_min: 10,  // tolerance in minutes
-      distance: { miles: 3, tolerance: 0.6 },
+      distance: { miles: 8, tolerance: 0.6 },
       landmark: "Rowell Meadow",
       legal: { township: 14, range: 30, section: 16, quarter: "NE" },
       base_visible: "no",
@@ -318,4 +318,31 @@ const SCENARIOS = {
       dispatcher: "Porterville"
     }
   },
+  "p1": {
+    label: "Park Ridge #1 (Easy)",  // Rowell Mdw
+    lookout: "Park Ridge",
+    photoIds: ["parkridge_1"],
+    smoke: {
+      photoId: "parkridge_1",
+      overlayImage: "assets/smoke_chews.png",
+      xPos: 1441, yPos: 748, widthPx: 539,   // pixel coords on the 1920x968 native photo
+      closeupImage: null
+    },
+    answers: { 
+      classification: "illegitimate",
+      azimuth_tolerance_min: 10,  // tolerance in minutes
+      distance: { miles: 2.5, tolerance: 0.6 },
+      landmark: "Eshom Campground",
+      legal: { township: 14, range: 28, section: 20, quarter: "SE" },
+      base_visible: "no",
+      volume: ["small"],
+      color: ["gray"],
+      character: ["billowing"],
+      drift: "none",
+      fuel: ["timber"],
+      jurisdiction: "SQF",
+      dispatcher: "Porterville"
+    }
+  },
+
 };

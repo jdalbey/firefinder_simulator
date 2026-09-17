@@ -69,6 +69,8 @@ const LOOKOUTS = {
 
   "Park Ridge": {
     lat: 36.72447, lng: -118.94384,   // ⚠ carried over from places-data.js — unverified, see header comment
-    photos: [] // TODO: no panorama photos yet
+    photos: [
+      { id: "parkridge_1",  src: "images/ParkRidge1.jpg",  width: 1920, height: 870,  left_azimuth: 170.35,  right_azimuth: 195.09},
+] 
   }
 };
