@@ -77,6 +77,24 @@
 
   #photo { width: 100%; height: auto; display: block; }
 
+  #photo-area { position: relative; }
+
+  /* Shown while a panorama photo is downloading (visible over the previous
+     photo, which stays on screen until the new one finishes loading). */
+  #photo-spinner {
+    display: none;
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 48px; height: 48px;
+    margin: -24px 0 0 -24px;
+    border: 5px solid rgba(0,0,0,0.15);
+    border-top-color: #b8860b;
+    border-radius: 50%;
+    animation: photo-spin 0.8s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes photo-spin { to { transform: rotate(360deg); } }
+
   #smoke-overlay {
     position: absolute;
     pointer-events: none;
@@ -430,6 +448,8 @@
               <img id="photo"
                    src=""
                    alt="Landscape panorama">
+              <!-- shown while the photo above is downloading -->
+              <div id="photo-spinner"></div>
               <!-- smoke overlay: positioned/sized over photo via JS/CSS from scenario data -->
               <img id="smoke-overlay" src="" alt="" style="display:none">
               <!-- sight overlay canvas: positioned over photo via JS/CSS -->
@@ -764,6 +784,7 @@ let currentPhotoIdx  = 0;
 const helpBackdrop = document.getElementById('help-backdrop');
 const reportPage   = document.getElementById('report-page');
 const photoEl      = document.getElementById('photo');
+const photoSpinner = document.getElementById('photo-spinner');
 const smokeOverlayEl = document.getElementById('smoke-overlay');
 const sightCvs     = document.getElementById('sight-canvas');
 const azCvs        = document.getElementById('azimuth-canvas');
@@ -931,6 +952,9 @@ function showPhoto(idx) {
   if (!photo) return;
   currentPhotoIdx = idx;
 
+  // Shown until the 'load'/'error' listener below hides it — the previous
+  // photo (if any) stays visible underneath while this one downloads.
+  photoSpinner.style.display = '';
   photoEl.src = photo.src;
   photoEl.alt = 'Landscape panorama — ' + (currentLookout || '') + ' (' + photo.id + ')';
 
@@ -1010,7 +1034,13 @@ function initFirefinder() {
   render();
 }
 
-photoEl.addEventListener('load', () => requestAnimationFrame(initFirefinder));
+photoEl.addEventListener('load', () => {
+  photoSpinner.style.display = 'none';
+  requestAnimationFrame(initFirefinder);
+});
+// A failed load (bad path, network drop) would otherwise spin forever with
+// no image ever arriving to fire 'load'.
+photoEl.addEventListener('error', () => { photoSpinner.style.display = 'none'; });
 if (photoEl.complete && photoEl.naturalWidth > 0) requestAnimationFrame(initFirefinder);
 window.addEventListener('resize', () => requestAnimationFrame(initFirefinder));
 
