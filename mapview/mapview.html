@@ -111,13 +111,21 @@ function formatInchLabel(inches) {
     return text;
 }
 
-  // Constants describing the desired line
-  const centerLat = 36.80454;
-  const centerLng = -119.11755;
+  const params = new URLSearchParams(window.location.search);
+
+  // Center on whichever Lookout's coordinates firefinder_simulator.html
+  // passed in (see openMapView()) — falling back to Delilah's, the only
+  // point this page's sight-line math has been validated against, when
+  // opened directly with no lat/lng (or for a Lookout with none set yet).
+  const DEFAULT_LAT = 36.80454;
+  const DEFAULT_LNG = -119.11755;
+  const rawLat = parseFloat(params.get('lat'));
+  const rawLng = parseFloat(params.get('lng'));
+  const centerLat = Number.isNaN(rawLat) ? DEFAULT_LAT : rawLat;
+  const centerLng = Number.isNaN(rawLng) ? DEFAULT_LNG : rawLng;
   const center = [centerLat, centerLng];
   const distanceMiles = 25
   const distanceMeters = distanceMiles * 1609.344;
-  const params     = new URLSearchParams(window.location.search);
   const rawBearing = params.get('bearing');
   // rawBearing is missing whenever Map is opened before the Firefinder has
   // been sighted (see openMapView() in firefinder_simulator.html) — there's
@@ -125,7 +133,8 @@ function formatInchLabel(inches) {
   // explanation instead (below) rather than a silently-missing/broken line.
   const bearing    = rawBearing === null ? NaN : parseFloat(rawBearing);
   const hasBearing = !Number.isNaN(bearing);
-
+  console.log("Mapview using bearing: ",bearing)
+  
   let endPoint = null;
   if (hasBearing) {
     // Project 25 miles out from the lookout along the reported bearing to

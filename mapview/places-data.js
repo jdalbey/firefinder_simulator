@@ -27,6 +27,6 @@ const PLACES = [
   { name: "silo", lat: 36.74789,  lng: -119.45240,  minZoom: 14, maxZoom: 14 },
   { name: "Deer Crk Rec Area", lat: 36.85666,  lng: -119.33869,  minZoom: 13, maxZoom: 14 },
   { name: "Island Park", lat: 36.86364,  lng: -119.31217,  minZoom: 13, maxZoom: 14 },
-  { name: "Bear Mtn", lat: 36.59632,  lng: -119.04731,  minZoom: 11, maxZoom: 13 }
-
+  { name: "Bear Mtn", lat: 36.59632,  lng: -119.04731,  minZoom: 11, maxZoom: 13 },
+  { name: "Rowell Meadow", lat: 36.71611, lng: -118.73654, minZoom: 14, maxZoom: 14 }
 ];

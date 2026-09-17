@@ -149,7 +149,7 @@ const SCENARIOS = {
       legal: { township: 12, range: 24, section: 27, quarter: "NW" },
       base_visible: "yes",
       volume: ["medium"],
-      color: ["grey"],
+      color: ["gray"],
       character: ["Billowing"],
       drift: "N",
       fuel: ["grass"],
@@ -176,7 +176,7 @@ const SCENARIOS = {
       legal: { township: 14, range: 23, section: 3, quarter: "NE" },
       base_visible: "yes",
       volume: ["medium"],
-      color: ["grey"],
+      color: ["gray"],
       character: ["Billowing"],
       drift: "S",
       fuel: ["brush"],
@@ -292,6 +292,30 @@ const SCENARIOS = {
       dispatcher: "Porterville"
     }
   },
-
-
+  "b1": {
+    label: "Buck Rock #1 (Easy)",  // Rowell Mdw
+    lookout: "Buck Rock",
+    photoIds: ["buckrock_1"],
+    smoke: {
+      photoId: "buckrock_1",
+      overlayImage: "assets/smoke_dome.png",
+      xPos: 351, yPos: 405, widthPx: 436,   // pixel coords on the 1920x968 native photo
+      closeupImage: "images/closeups/scenarioBR1_closeup.png"
+    },
+    answers: { 
+      classification: "illegitimate",
+      azimuth_tolerance_min: 10,  // tolerance in minutes
+      distance: { miles: 3, tolerance: 0.6 },
+      landmark: "Rowell Meadow",
+      legal: { township: 14, range: 30, section: 16, quarter: "NE" },
+      base_visible: "no",
+      volume: ["small"],
+      color: ["gray"],
+      character: ["billowing"],
+      drift: "N",
+      fuel: ["timber"],
+      jurisdiction: "SQF",
+      dispatcher: "Porterville"
+    }
+  },
 };

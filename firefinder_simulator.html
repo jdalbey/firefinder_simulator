@@ -620,7 +620,7 @@
           <span class="field-label">Color</span>
           <div class="radio-group">
             <label><input type="radio" name="color" value="white"> White</label>
-            <label><input type="radio" name="color" value="grey"> Grey</label>
+            <label><input type="radio" name="color" value="gray"> Gray</label>
             <label><input type="radio" name="color" value="black"> Black</label>
             <label><input type="radio" name="color" value="brown"> Brown</label>
           </div>
@@ -1048,7 +1048,7 @@ function openBinoculars() {
     (cx / window.innerWidth  * 100).toFixed(2) + '% ' +
     (cy / window.innerHeight * 100).toFixed(2) + '%';
 
-  let closeupSrc = 'assets/smoke_closeup_fallback.png'; // fallback if the scenario has no smoke/closeup defined
+  let closeupSrc = 'images/closeups/smoke_closeup_fallback.png'; // fallback if the scenario has no smoke/closeup defined
   const smoke = currentScenario && currentScenario.smoke;
   if (smoke && smoke.closeupImage) { closeupSrc = smoke.closeupImage; }
   binoImg.src = closeupSrc;
@@ -1079,10 +1079,20 @@ binoBackdrop.addEventListener('click', e => {
 // a popup would silently kick the trainee out of fullscreen every time they
 // checked the map.
 function openMapView() {
-  const src = sightVisible
-    ? `mapview/mapview.html?bearing=${currentAz().toFixed(2)}`
-    : 'mapview/mapview.html';
-  mapIframe.src = src;
+  const params = new URLSearchParams();
+  if (sightVisible) { params.set('bearing', currentAz().toFixed(2)); }
+
+  // Center the map on the active Lookout's own coordinates, not whatever
+  // mapview.html's own default is — omitted (falling back to that default)
+  // when this Lookout has no verified lat/lng yet (see lookouts-data.js).
+  const lookout = LOOKOUTS[currentLookout];
+  if (lookout && lookout.lat != null && lookout.lng != null) {
+    params.set('lat', lookout.lat);
+    params.set('lng', lookout.lng);
+  }
+
+  const qs = params.toString();
+  mapIframe.src = 'mapview/mapview.html' + (qs ? '?' + qs : '');
   mapBackdrop.classList.add('visible');
 }
 
