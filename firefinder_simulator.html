@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Firefinder Simulator v0.1</title>
 <style>
   /* ── Light theme base ───────────────────────────────────────────── */
@@ -106,6 +107,26 @@
     letter-spacing: 0.04em;
     padding: 4px 0 2px;
   }
+
+  /* The arrow keys shown in the firefinder hint are also real buttons —
+     tapping/clicking one moves the sight the same as pressing the key it
+     depicts, for touch/mouse use where there's no keyboard. Sized well
+     above the ~44px touch-target minimum, with room between them, so
+     adjacent keys aren't easily mis-tapped by a fingertip. */
+  .key-btn {
+    background: #eee6d8;
+    border: 1px solid #9a8040;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 1.3em;
+    min-width: 48px;
+    min-height: 44px;
+    padding: 4px 10px;
+    margin: 0 4px;
+    cursor: pointer;
+  }
+  .key-btn:hover  { background: #e0d5c0; }
+  .key-btn:active { background: #d0c3a8; }
 
   #help-backdrop {
     display: none;
@@ -437,9 +458,17 @@
   <!-- ═══ Firefinder hint ══════════════════════════════════════════ -->
   <tr id="firefinder-hint-row" style="display:none">
     <td colspan="3" align="center">
+      <!-- The arrow "keys" below are real buttons — tappable/clickable,
+           not just a keyboard-shortcut legend — so touch/mouse users
+           without a keyboard have an equivalent way to move the sight. -->
       <span id="firefinder-hint">
-        <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> &ensp;move 1&deg; &emsp;&emsp;
-        <kbd>Shift</kbd> + <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> &ensp;move 1&prime; 
+        <button type="button" class="key-btn" id="nudge-deg-left"  title="Move sight 1° left">&#8592;</button>
+        <button type="button" class="key-btn" id="nudge-deg-right" title="Move sight 1° right">&#8594;</button>
+        &ensp;move 1&deg; &emsp;&emsp;
+        <kbd>Shift</kbd> +
+        <button type="button" class="key-btn" id="nudge-min-left"  title="Move sight 1&prime; left">&#8592;</button>
+        <button type="button" class="key-btn" id="nudge-min-right" title="Move sight 1&prime; right">&#8594;</button>
+        &ensp;move 1&prime;
         &ensp;&ensp;&ensp;For educational use only.
       </span>
     </td>
@@ -994,6 +1023,20 @@ function toggleSight() {
 }
 
 document.getElementById('btn-firefinder').addEventListener('click', toggleSight);
+
+// Moves the sight by stepMinutes arcminutes (dir -1 or +1), clamped to the
+// photo's own edges. Shared by the keyboard handler and the on-screen nudge
+// buttons below, so touch/mouse users without a keyboard have an equivalent.
+function nudgeSight(dir, stepMinutes) {
+  const totalMin = AZ_RANGE * 60;
+  sightFrac = Math.max(0, Math.min(1, sightFrac + dir * stepMinutes / totalMin));
+  render();
+}
+
+document.getElementById('nudge-deg-left').addEventListener('click',  () => nudgeSight(-1, 60));
+document.getElementById('nudge-min-left').addEventListener('click',  () => nudgeSight(-1, 1));
+document.getElementById('nudge-min-right').addEventListener('click', () => nudgeSight(1, 1));
+document.getElementById('nudge-deg-right').addEventListener('click', () => nudgeSight(1, 60));
 
 // ── Binoculars closeup ─────────────────────────────────────────────
 // Opens the zoomed-in closeup modal for the current scenario's smoke.
@@ -1676,11 +1719,9 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
   e.preventDefault();
 
-  const totalMin = AZ_RANGE * 60;
-  const step     = e.shiftKey ? 1 : 60;
-  const dir      = e.key === 'ArrowRight' ? 1 : -1;
-  sightFrac = Math.max(0, Math.min(1, sightFrac + dir * step / totalMin));
-  render();
+  const step = e.shiftKey ? 1 : 60;
+  const dir  = e.key === 'ArrowRight' ? 1 : -1;
+  nudgeSight(dir, step);
 });
 </script>
 </body>
