@@ -954,7 +954,7 @@ function showPhoto(idx) {
 
   // Shown until the 'load'/'error' listener below hides it — the previous
   // photo (if any) stays visible underneath while this one downloads.
-  photoSpinner.style.display = '';
+  photoSpinner.style.display = 'block';
   photoEl.src = photo.src;
   photoEl.alt = 'Landscape panorama — ' + (currentLookout || '') + ' (' + photo.id + ')';
 
