@@ -11,3 +11,5 @@ The simulator features include:
 - A map (similar to the one on the actual firefinder) from which one can determine the distance to the smoke and the legal description of its location.
 - A smoke report form modeled after an actual smoke report. When completed by the student, the simulation will evaluate it and provide feedback.
 - Multiple scenarios are available that offer different levels of challenge.
+
+[Live Demo](https://jdalbey.github.io/firefinder_simulator/firefinder_simulator.html)
