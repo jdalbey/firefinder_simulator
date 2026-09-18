@@ -325,7 +325,7 @@ const SCENARIOS = {
     smoke: {
       photoId: "parkridge_1",
       overlayImage: "assets/smoke_chews.png",
-      xPos: 1441, yPos: 748, widthPx: 539,   // pixel coords on the 1920x968 native photo
+      xPos: 1441, yPos: 748, widthPx: 255,   // pixel coords on the 1920x968 native photo
       closeupImage: null
     },
     answers: { 
