@@ -80,17 +80,21 @@
   #photo-area { position: relative; }
 
   /* Shown while a panorama photo is downloading (visible over the previous
-     photo, which stays on screen until the new one finishes loading). */
+     photo, which stays on screen until the new one finishes loading).
+     Fixed to the viewport (not the photo/#photo-area) at a constant spot —
+     1/3 down from the top, horizontally centered — so it lands in the same
+     place regardless of which photo's own size is currently loading. */
   #photo-spinner {
     display: none;
-    position: absolute;
-    top: 50%; left: 50%;
+    position: fixed;
+    top: 33vh; left: 50%;
     width: 48px; height: 48px;
     margin: -24px 0 0 -24px;
     border: 5px solid rgba(0,0,0,0.15);
     border-top-color: #b8860b;
     border-radius: 50%;
     animation: photo-spin 0.8s linear infinite;
+    z-index: 500;
     pointer-events: none;
   }
   @keyframes photo-spin { to { transform: rotate(360deg); } }
