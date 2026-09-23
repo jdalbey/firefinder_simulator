@@ -1126,6 +1126,9 @@ function openMapView() {
     params.set('lat', lookout.lat);
     params.set('lng', lookout.lng);
   }
+  if (lookout && lookout.inchesPerMile != null) {
+    params.set('inchesPerMile', lookout.inchesPerMile);
+  }
 
   const qs = params.toString();
   mapIframe.src = 'mapview/mapview.html' + (qs ? '?' + qs : '');

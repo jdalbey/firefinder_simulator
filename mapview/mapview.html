@@ -124,6 +124,11 @@ function formatInchLabel(inches) {
   const centerLat = Number.isNaN(rawLat) ? DEFAULT_LAT : rawLat;
   const centerLng = Number.isNaN(rawLng) ? DEFAULT_LNG : rawLng;
   const center = [centerLat, centerLng];
+
+  // Scale of the lookout's physical Firefinder map, used to label the sight
+  // line's index marks in inches. Defaults to Delilah's .5" = 1 mi.
+  const rawInchesPerMile = parseFloat(params.get('inchesPerMile'));
+  const inchesPerMile = Number.isNaN(rawInchesPerMile) ? 0.5 : rawInchesPerMile;
   const distanceMiles = 25
   const distanceMeters = distanceMiles * 1609.344;
   const rawBearing = params.get('bearing');
@@ -231,8 +236,9 @@ if (hasBearing) {
       ).addTo(map);
 
       // Label the long ticks (every whole mile) with the corresponding
-      // inch value on the real Firefinder rule's own scale of .5" = 1 mi
-      // — so labels read .5, 1, 1.5, 2, ... instead of the mile count —
+      // inch value on the real Firefinder rule's own scale (inchesPerMile,
+      // e.g. .5" = 1 mi gives labels .5, 1, 1.5, 2, ...) instead of the
+      // mile count —
       // placed a bit past the tick's far end (away from the sight line).
       // The ticks themselves are only a few pixels long on screen at most
       // zoom levels, so the label is offset an extra tickLengthMeters
@@ -248,7 +254,7 @@ if (hasBearing) {
           L.marker(labelPoint, {
               icon: L.divIcon({
                   className: 'mile-label',
-                  html: formatInchLabel(mile / 2),
+                  html: formatInchLabel(mile * inchesPerMile),
                   iconSize: [16, 16],
                   iconAnchor: [8, 8]
               }),

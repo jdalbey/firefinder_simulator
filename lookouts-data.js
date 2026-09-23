@@ -10,6 +10,10 @@
 //                mapview.html (see openMapView() in firefinder_simulator.html)
 //                so the map centers on and draws its sight-line from the
 //                correct lookout instead of always defaulting to Delilah's.
+//     inchesPerMile — the scale of this lookout's physical Firefinder map
+//                (e.g. 0.5 means .5" = 1 mile). Passed to mapview.html so
+//                the sight-line's index-mark labels read in inches on the
+//                right scale. Defaults to 0.5 in mapview.html if omitted.
 //     photos[] — one entry per photo in that lookout's 360° panorama set,
 //                in left-to-right order
 //       id            — unique identifier, referenced by scenarios-data.js
@@ -19,25 +23,11 @@
 //       left_azimuth  — compass bearing in degrees at the LEFT edge of the photo
 //       right_azimuth — compass bearing in degrees at the RIGHT edge of the photo
 //
-// ⚠ TODO — left_azimuth/right_azimuth are real survey data that only you can
-//   supply. Only delilah_1 has values below, carried over from the bearing
-//   range (281°–316°) the simulator already had hardcoded. Every other photo
-//   is marked null until real bearings are filled in — the firefinder azimuth
-//   exercise will be wrong for a photo whose range isn't set correctly, so
-//   don't wire up new scenarios against a null-azimuth photo yet.
-//
-// ⚠ TODO — Buck Rock has no verified lat/lng yet (null below) — mapview.html
-//   falls back to Delilah's coordinates until real ones are supplied here.
-//   Park Ridge's lat/lng were carried over from mapview/places-data.js, but
-//   that file's own header flags its coordinates as unverified placeholders
-//   — double check both before relying on them.
-//
-// ⚠ TODO — Park Ridge has no panorama photos on disk yet. Add photos here
-//   (and matching scenarios in scenarios-data.js) once that set exists.
 
 const LOOKOUTS = {
   "Delilah": {
     lat: 36.80454, lng: -119.11755,   // matches the point mapview.html/mapview's sight-line math was validated against
+    inchesPerMile: 0.5,
     photos: [
       { id: "delilah_1",  src: "images/Landmarks_Delilah1.png",  width: 1920, height: 968,  left_azimuth: 223.11,  right_azimuth: 247.14},
       { id: "delilah_2",  src: "images/Landmarks_Delilah2.png",  width: 1920, height: 892,  left_azimuth: 247.0, right_azimuth: 271.16 },
@@ -62,13 +52,15 @@ const LOOKOUTS = {
 
   "Buck Rock": {
     lat: 36.73725, lng: -118.86064,
+    inchesPerMile: 1,
     photos: [
       { id: "buckrock_1",  src: "images/Landmarks_BuckRock1.jpg",  width: 1920, height: 784,  left_azimuth: 99.89,  right_azimuth: 110.85},
     ]
   },
 
   "Park Ridge": {
-    lat: 36.72447, lng: -118.94384,   // ⚠ carried over from places-data.js — unverified, see header comment
+    lat: 36.72447, lng: -118.94384,   
+    inchesPerMile: 0.5,
     photos: [
       { id: "parkridge_1",  src: "images/ParkRidge1.jpg",  width: 1920, height: 870,  left_azimuth: 170.35,  right_azimuth: 195.09},
 ] 
